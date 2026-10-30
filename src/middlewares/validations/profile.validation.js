@@ -1,18 +1,6 @@
 import { param, body } from "express-validator";
 import { UserModel } from "../../models/user.model.js";
 
-export const loginUserValidation = [
-  body("username")
-    .trim()
-    .notEmpty()
-    .withMessage("El username no puede ser vacio")
-    .bail(),
-  body("password")
-    .trim()
-    .notEmpty()
-    .withMessage("La password no puede estar vacia"),
-];
-
 export const updateProfileValidation = [
   body("username")
     .optional()

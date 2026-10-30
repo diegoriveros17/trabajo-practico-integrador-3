@@ -110,7 +110,14 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const userData = matchedData(req, { locations: ["body"] });
+    let userData = matchedData(req, { locations: ["body"] });
+
+    const { password } = userData;
+
+    if (password) {
+      const passwordHashed = await hashPassword(password);
+      userData.password = passwordHashed;
+    }
 
     let profile = await UserModel.findById(userId);
 
