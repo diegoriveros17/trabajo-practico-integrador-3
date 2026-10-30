@@ -25,7 +25,9 @@ export const createCategory = async (req, res) => {
 
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await CategoryModel.find().select("-_id -password");
+    const categories = await CategoryModel.find().select(
+      "-_id -password -createdAt -updatedAt -deletedAt",
+    );
 
     return res.status(200).json({
       msg: "Categorias",
@@ -42,7 +44,9 @@ export const getCategoryById = async (req, res) => {
   try {
     const { id } = matchedData(req, { locations: ["params"] });
 
-    const category = await CategoryModel.findById(id).populate("events");
+    const category = await CategoryModel.findById(id)
+      .select("-_id -password -createdAt -updatedAt -deletedAt")
+      .populate("events");
 
     return res.status(200).json({
       msg: "Categoria obtenida correctamente",
@@ -64,7 +68,7 @@ export const updateCategory = async (req, res) => {
       id,
       { $set: CategoryData },
       { returnDocument: "after" },
-    );
+    ).select("-_id -password -createdAt -updatedAt -deletedAt");
 
     return res.status(200).json({
       msg: "Categoria actualizada correctamente",

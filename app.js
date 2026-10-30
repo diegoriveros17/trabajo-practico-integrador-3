@@ -20,7 +20,7 @@ app.use(cookieParser());
 //Routes
 app.use("/api", authRouter);
 app.use("/api", userRouter);
-app.user("/api", categoriesRouter);
+app.use("/api", categoriesRouter);
 
 app.listen(PORT, async () => {
   await connectDB();

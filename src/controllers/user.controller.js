@@ -57,7 +57,7 @@ export const insertUser = async (req, res) => {
       password: passwordHashed,
       role,
       profile,
-    }).select("-_id -password -createdAt -updatedAt -deletedAt");
+    });
 
     return res.status(201).json({
       message: `Usuario creado con su perfil correctamente`,
