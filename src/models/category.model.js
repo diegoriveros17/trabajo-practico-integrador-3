@@ -5,11 +5,17 @@ const categorySchema = new Schema(
     name: {
       type: String,
       unique: true,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 30,
     },
 
     description: {
       type: String,
-      require: false,
+      required: false,
+      trim: true,
+      maxlength: 200,
     },
   },
   {

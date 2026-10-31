@@ -6,31 +6,42 @@ const eventSchema = new Schema(
       type: String,
       require: true,
       unique: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 150,
     },
 
     description: {
       type: String,
-      require: false,
+      required: true,
+      trim: true,
+      minlength: 20,
     },
 
     startDate: {
       type: Date,
-      require: true,
+      required: true,
     },
 
     endDate: {
       type: Date,
-      require: true,
+      required: true,
     },
 
     capacity: {
       type: Number,
       require: false,
+      min: 1,
+      validate: {
+        validator: Number.isInteger,
+        message: "La capacidad debe ser un número entero",
+      },
     },
 
     price: {
       type: Number,
-      require: false,
+      min: 0,
+      default: 0,
     },
 
     status: {
@@ -42,15 +53,24 @@ const eventSchema = new Schema(
     location: {
       venue: {
         type: String,
-        require: false,
+        required: true,
+        trim: true,
+        minlength: 3,
+        maxlength: 100,
       },
       address: {
         type: String,
-        require: false,
+        required: true,
+        trim: true,
+        minlength: 5,
+        maxlength: 150,
       },
       city: {
         type: String,
-        require: false,
+        required: true,
+        trim: true,
+        minlength: 2,
+        maxlength: 50,
       },
     },
 

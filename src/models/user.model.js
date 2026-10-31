@@ -6,12 +6,18 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 20,
     },
 
     email: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "El correo electrónico no es válido"],
     },
 
     password: {
@@ -21,17 +27,22 @@ const userSchema = new Schema(
     role: {
       type: String,
       enum: ["user", "admin"],
-      required: false,
       default: "user",
     },
     profile: {
       first_name: {
         type: String,
         required: true,
+        trim: true,
+        minlength: 2,
+        maxlength: 50,
       },
       last_name: {
         type: String,
         required: true,
+        trim: true,
+        minlength: 2,
+        maxlength: 50,
       },
       birth_date: {
         type: Date,
