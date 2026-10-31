@@ -7,7 +7,7 @@ export const login = async (req, res) => {
   try {
     const { username, password } = matchedData(req, { locations: ["body"] });
 
-    const userExist = await UserModel.findOne({ username });
+    const userExist = await UserModel.findOne({ username, deletedAt: null });
 
     if (!userExist) {
       return res
@@ -62,7 +62,7 @@ export const register = async (req, res) => {
       });
     }
 
-    const newUser = await UserModel.create({
+    await UserModel.create({
       username,
       email,
       password: passwordHashed,
@@ -86,15 +86,7 @@ export const logout = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
-
-    const user = await UserModel.findById(userId).select("profile -_id");
-
-    if (!user) {
-      return res.status(404).json({
-        message: "Usuario no encontrado",
-      });
-    }
+    const user = await UserModel.findById(req.user.id).select("profile -_id");
 
     return res.status(200).json({
       message: "Perfil obtenido",
@@ -109,29 +101,13 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
-    let userData = matchedData(req, { locations: ["body"] });
+    const { profile } = matchedData(req, { locations: ["body"] });
 
-    const { password } = userData;
-
-    if (password) {
-      const passwordHashed = await hashPassword(password);
-      userData.password = passwordHashed;
-    }
-
-    let profile = await UserModel.findById(userId);
-
-    if (!profile) {
-      return res.status(404).json({
-        message: "No existe el usuario que intenta actualizar",
-      });
-    } else {
-      profile = await UserModel.findByIdAndUpdate(
-        { _id: userId },
-        { $set: userData },
-        { returnDocument: "after" },
-      );
-    }
+    const user = await UserModel.findByIdAndUpdate(
+      req.user.id,
+      { $set: { profile } },
+      { returnDocument: "after", runValidators: true },
+    );
 
     return res.status(200).json({
       message: "Perfil actualizado correctamente",

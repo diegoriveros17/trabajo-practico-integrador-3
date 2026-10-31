@@ -1,5 +1,6 @@
 import { CategoryModel } from "../models/category.model.js";
 import { matchedData } from "express-validator";
+import { EventModel } from "../models/event.model.js";
 
 export const createCategory = async (req, res) => {
   try {
@@ -26,7 +27,7 @@ export const createCategory = async (req, res) => {
 export const getAllCategories = async (req, res) => {
   try {
     const categories = await CategoryModel.find().select(
-      "-_id -password -createdAt -updatedAt -deletedAt",
+      "-_id name description",
     );
 
     return res.status(200).json({
@@ -45,7 +46,7 @@ export const getCategoryById = async (req, res) => {
     const { id } = matchedData(req, { locations: ["params"] });
 
     const category = await CategoryModel.findById(id)
-      .select("-_id -password -createdAt -updatedAt -deletedAt")
+      .select("-_id name description")
       .populate("events");
 
     return res.status(200).json({
@@ -68,7 +69,7 @@ export const updateCategory = async (req, res) => {
       id,
       { $set: CategoryData },
       { returnDocument: "after" },
-    ).select("-_id -password -createdAt -updatedAt -deletedAt");
+    ).select("-_id name description");
 
     return res.status(200).json({
       msg: "Categoria actualizada correctamente",
@@ -86,6 +87,11 @@ export const deleteCategory = async (req, res) => {
     const { id } = matchedData(req, { locations: ["params"] });
 
     await CategoryModel.findByIdAndDelete(id);
+
+    await EventModel.updateMany(
+      { categories: id },
+      { $pull: { categories: id } },
+    );
 
     return res.status(200).json({
       msg: "Categoria eliminada",

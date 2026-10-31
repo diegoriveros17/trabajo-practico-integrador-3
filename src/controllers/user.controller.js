@@ -1,6 +1,7 @@
 import { matchedData } from "express-validator";
 import { UserModel } from "../models/user.model.js";
 import { hashPassword } from "../helpers/bcrypt.helper.js";
+import { EventModel } from "../models/event.model.js";
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -109,8 +110,10 @@ export const deleteUser = async (req, res) => {
       { $set: { deletedAt: new Date() } },
     );
 
+    await EventModel.deleteMany({ organizer: id });
+
     return res.status(200).json({
-      message: "Usuario eliminado",
+      message: "Usuario eliminado junto con sus eventos",
     });
   } catch (error) {
     return res.status(500).json({

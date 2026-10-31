@@ -140,7 +140,7 @@ export const updateEventValidation = [
     .custom(async (title, { req }) => {
       const event = await EventModel.findOne({
         title,
-        _id: { $ne: req.params.id },
+        _id: { $ne: req.user.id },
       });
       if (event) {
         throw new Error("Ya existe un evento con este título");

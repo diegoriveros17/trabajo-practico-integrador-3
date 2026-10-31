@@ -26,12 +26,7 @@ categoriesRouter.post(
   createCategory,
 );
 
-categoriesRouter.get(
-  "/categories",
-  authMiddleware,
-  adminMiddleware,
-  getAllCategories,
-);
+categoriesRouter.get("/categories", authMiddleware, getAllCategories);
 
 categoriesRouter.get(
   "/categories/:id",

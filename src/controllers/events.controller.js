@@ -7,7 +7,7 @@ export const createEvent = async (req, res) => {
 
     const event = await EventModel.create({
       ...eventData,
-      organizer: req.user._id,
+      organizer: req.user.id,
     });
 
     return res.status(201).json({
@@ -24,8 +24,8 @@ export const createEvent = async (req, res) => {
 export const getAllEvents = async (req, res) => {
   try {
     const events = await EventModel.find()
-      .populate("organizer", "username email")
-      .populate("categories");
+      .populate("organizer", "username email -_id")
+      .populate("categories", "name description -_id");
 
     return res.status(200).json({
       message: "Listado de eventos obtenido correctamente",
@@ -41,8 +41,8 @@ export const getAllEvents = async (req, res) => {
 export const getAllMyEvents = async (req, res) => {
   try {
     const events = await EventModel.find({ organizer: req.user.id })
-      .populate("organizer", "username email")
-      .populate("categories");
+      .populate("organizer", "username email -_id")
+      .populate("categories", "name description -_id");
 
     return res.status(200).json({
       message: "Listado de mis eventos",
@@ -60,8 +60,8 @@ export const getEventById = async (req, res) => {
     const { id } = matchedData(req, { locations: ["params"] });
 
     const event = await EventModel.findById(id)
-      .populate("organizer", "username email")
-      .populate("categories");
+      .populate("organizer", "username email -_id")
+      .populate("categories", "name description -_id");
 
     return res.status(200).json({
       message: "Evento y categoria obtenido correctamente",
@@ -77,7 +77,7 @@ export const getEventById = async (req, res) => {
 export const updateEvent = async (req, res) => {
   try {
     const { id } = matchedData(req, { locations: ["params"] });
-    const { eventData } = matchedData(req, { locations: ["body"] });
+    const eventData = matchedData(req, { locations: ["body"] });
 
     const event = await EventModel.findByIdAndUpdate(
       { _id: id },

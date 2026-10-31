@@ -5,12 +5,27 @@ export const loginUserValidation = [
   body("username")
     .trim()
     .notEmpty()
-    .withMessage("El username no puede ser vacio")
+    .withMessage("El usuario es obligatori")
     .bail(),
   body("password")
     .trim()
     .notEmpty()
-    .withMessage("La password no puede estar vacia"),
+    .withMessage("La contraseña es obligatoria"),
+];
+
+export const validateUserId = [
+  param("id")
+    .notEmpty()
+    .withMessage("El id es obligatorio")
+    .isMongoId()
+    .withMessage("El id no tiene el formato correcto")
+    .custom(async (id) => {
+      const user = await UserModel.findById(id);
+      if (!user) {
+        throw new Error("El usuario especificado no existe");
+      }
+      return true;
+    }),
 ];
 
 export const createUserValidation = [
@@ -83,25 +98,24 @@ export const createUserValidation = [
     .withMessage("El apellido solo puede contener letras"),
   body("profile.birthDate")
     .optional()
-    .isDate({ format: "DD-MM-YYYY", strictMode: true })
-    .withMessage("La fecha debe tener el formato DD-MM-YYYY"),
-  body("profile.phone").optional(),
-];
-
-export const updateUserValidation = [
-  param("id")
-    .notEmpty()
-    .withMessage("El id es obligatorio")
-    .isMongoId()
-    .withMessage("El id no tiene el formato correcto")
+    .isISO8601()
+    .withMessage("La fecha debe tener el formato YYYY-MM-DD")
     .bail()
-    .custom(async (id) => {
-      const user = await UserModel.findById(id);
-      if (!user) {
-        throw new Error("El usuario especificado no existe");
+    .custom((birthDate) => {
+      if (new Date(birthDate) > new Date()) {
+        throw new Error("La fecha de nacimiento no mayor a la actual");
       }
       return true;
     }),
+  body("profile.phone")
+    .optional()
+    .matches(/^\d{8,15}$/)
+    .withMessage("El teléfono debe tener solo números (entre 8 y 15 dígitos)"),
+  ,
+];
+
+export const updateUserValidation = [
+  ...validateUserId,
   body("username")
     .optional()
     .trim()
@@ -143,40 +157,4 @@ export const updateUserValidation = [
     .optional()
     .isIn(["user", "admin"])
     .withMessage("El rol solo puede ser 'user' o 'admin'"),
-  body("profile.first_name")
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage("El nombre debe tener entre 2 y 50 caracteres")
-    .bail()
-    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
-    .withMessage("El nombre solo puede contener letras"),
-  body("profile.last_name")
-    .optional()
-    .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage("El apellido debe tener entre 2 y 50 caracteres")
-    .bail()
-    .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
-    .withMessage("El apellido solo puede contener letras"),
-  body("profile.birthDate")
-    .optional()
-    .isDate({ format: "DD-MM-YYYY", strictMode: true })
-    .withMessage("La fecha debe tener el formato DD-MM-YYYY"),
-  body("profile.phone").optional(),
-];
-
-export const validateUserId = [
-  param("id")
-    .notEmpty()
-    .withMessage("El parámetro id es obligatorio")
-    .isMongoId()
-    .withMessage("El id no tiene el formato correcto")
-    .custom(async (id) => {
-      const user = await UserModel.findById(id);
-      if (!user) {
-        throw new Error("El usuario especificado no existe");
-      }
-      return true;
-    }),
 ];

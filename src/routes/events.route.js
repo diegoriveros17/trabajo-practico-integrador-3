@@ -19,19 +19,19 @@ import { ownerOrAdminMiddleware } from "../middlewares/ownerOrAdmin.middleware.j
 export const eventRouter = Router();
 
 eventRouter.post(
-  "/",
+  "/events",
   authMiddleware,
   createEventValidation,
   validate,
   createEvent,
 );
 
-eventRouter.get("/", authMiddleware, getAllEvents);
+eventRouter.get("/events", authMiddleware, getAllEvents);
 
-eventRouter.get("/my", authMiddleware, getAllMyEvents);
+eventRouter.get("/myEvents", authMiddleware, getAllMyEvents);
 
 eventRouter.get(
-  "/:id",
+  "/events/:id",
   authMiddleware,
   validateEventId,
   validate,
@@ -39,7 +39,7 @@ eventRouter.get(
 );
 
 eventRouter.put(
-  "/:id",
+  "/events/:id",
   authMiddleware,
   updateEventValidation,
   validate,
@@ -47,7 +47,7 @@ eventRouter.put(
 );
 
 eventRouter.delete(
-  "/:id",
+  "/events/:id",
   authMiddleware,
   validateEventId,
   validate,
