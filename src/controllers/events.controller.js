@@ -11,7 +11,7 @@ export const createEvent = async (req, res) => {
     });
 
     return res.status(201).json({
-      message: "Evento creado exitosamente",
+      message: "Evento creado correctamente",
       event,
     });
   } catch (error) {
@@ -28,7 +28,7 @@ export const getAllEvents = async (req, res) => {
       .populate("categories");
 
     return res.status(200).json({
-      message: "Listado de eventos obtenido exitosamente",
+      message: "Listado de eventos obtenido correctamente",
       events,
     });
   } catch (error) {
@@ -40,7 +40,6 @@ export const getAllEvents = async (req, res) => {
 
 export const getAllMyEvents = async (req, res) => {
   try {
-    const { id } = matchedData(req, { locations: ["params"] });
     const events = await EventModel.find({ organizer: req.user.id })
       .populate("organizer", "username email")
       .populate("categories");
@@ -65,7 +64,7 @@ export const getEventById = async (req, res) => {
       .populate("categories");
 
     return res.status(200).json({
-      message: "Evento y categoria obtenido exitosamente",
+      message: "Evento y categoria obtenido correctamente",
       event,
     });
   } catch (error) {
