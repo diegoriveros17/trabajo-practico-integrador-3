@@ -13,7 +13,7 @@ import {
   updateUserValidation,
 } from "../middlewares/validations/user.validation.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import { updateProfileValidation } from "../middlewares/validations/profile.validation.js";
+import { ProfileValidation } from "../middlewares/validations/profile.validation.js";
 
 export const authRouter = Router();
 
@@ -28,7 +28,7 @@ authRouter.get("/profile", authMiddleware, getProfile);
 authRouter.put(
   "/auth/profile",
   authMiddleware,
-  updateProfileValidation,
+  ProfileValidation,
   validate,
   updateProfile,
 );

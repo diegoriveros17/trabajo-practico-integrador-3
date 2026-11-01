@@ -1,17 +1,19 @@
 import { body } from "express-validator";
 
-export const updateProfileValidation = [
+export const ProfileValidation = [
   body("profile.first_name")
-    .optional()
     .trim()
+    .notEmpty()
+    .withMessage("El campo nombre no estar vacio")
     .isLength({ min: 2, max: 50 })
     .withMessage("El nombre debe tener entre 2 y 50 caracteres")
     .bail()
     .matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
     .withMessage("El nombre solo puede contener letras"),
   body("profile.last_name")
-    .optional()
     .trim()
+    .notEmpty()
+    .withMessage("El campo nombre no estar vacio")
     .isLength({ min: 2, max: 50 })
     .withMessage("El apellido debe tener entre 2 y 50 caracteres")
     .bail()
@@ -31,5 +33,4 @@ export const updateProfileValidation = [
     .optional()
     .matches(/^\d{8,15}$/)
     .withMessage("El teléfono debe tener solo números (entre 8 y 15 dígitos)"),
-  ,
 ];
